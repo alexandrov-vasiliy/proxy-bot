@@ -1,7 +1,7 @@
-"use server"
+'use server';
 
-import aiAxios from "@/lib/axios";
-import {ApiResponse} from "@/lib/types";
+import aiAxios from '@/lib/axios';
+import { ApiResponse } from '@/lib/types';
 
 export interface IModel {
     id: string
@@ -11,7 +11,12 @@ export interface IModel {
 }
 
 export async function getModels() {
-    const response = await aiAxios.get('/v1/models')
+    try {
+        const response = await aiAxios.get('/v1/models');
 
-    return response.data as ApiResponse<IModel[]>
+        return response.data as ApiResponse<IModel[]>;
+    } catch (e) {
+        console.error(e);
+        throw e;
+    }
 }
