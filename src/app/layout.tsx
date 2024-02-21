@@ -5,8 +5,6 @@ import '@mantine/code-highlight/styles.css';
 import { ColorSchemeScript, createTheme, MantineProvider } from '@mantine/core';
 import MainShell from '@/components/layout/MainShell';
 
-import StoreProvider from '@/store/StoreProvider';
-
 // import '@mantine/dates/styles.css';
 // import '@mantine/dropzone/styles.css';
 
@@ -39,9 +37,7 @@ export default function RootLayout({
         <body>
             <MantineProvider theme={theme}>
                 <MainShell>
-                    <StoreProvider chat={[]}>
                         {children}
-                    </StoreProvider>
                 </MainShell>
             </MantineProvider>
         </body>
