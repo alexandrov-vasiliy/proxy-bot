@@ -2,8 +2,11 @@ import type { Metadata } from 'next';
 import './globals.css';
 import '@mantine/core/styles.css';
 import '@mantine/code-highlight/styles.css';
+import { getServerSession } from 'next-auth';
 import { ColorSchemeScript, createTheme, MantineProvider } from '@mantine/core';
 import MainShell from '@/components/layout/MainShell';
+import SessionProvider from '@/components/providers/SessionProvider';
+import ChatHistory from '@/components/chat/ChatHistory/ChatHistory';
 
 // import '@mantine/dates/styles.css';
 // import '@mantine/dropzone/styles.css';
@@ -17,11 +20,12 @@ const theme = createTheme({
     primaryColor: 'teal',
 });
 
-export default function RootLayout({
-                                       children,
-                                   }: Readonly<{
+export default async function RootLayout({
+                                             children,
+                                         }: Readonly<{
     children: React.ReactNode;
 }>) {
+    const session = await getServerSession();
     return (
         <html lang="en">
         <head>
@@ -35,11 +39,18 @@ export default function RootLayout({
             <ColorSchemeScript />
         </head>
         <body>
+        <SessionProvider session={session}>
             <MantineProvider theme={theme}>
-                <MainShell>
-                        {children}
+                <MainShell
+                  drawer={
+                        <ChatHistory />
+                    }
+                >
+                    {children}
                 </MainShell>
             </MantineProvider>
+        </SessionProvider>
+
         </body>
         </html>
     );

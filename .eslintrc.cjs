@@ -17,6 +17,8 @@ module.exports = {
     'no-template-curly-in-string': 'off',
     'no-console': 'off',
     'max-len': 'off',
-    'no-alert': 'off'
+    'no-alert': 'off',
+    'no-restricted-syntax': 'off',
+    'no-param-reassign': 'off'
   },
 };
