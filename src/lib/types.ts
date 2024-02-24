@@ -50,11 +50,18 @@ export type TAvailibleModels =
     | 'gpt-4-0125-preview'
     | 'gpt-4-turbo-preview';
 
+export type TImageModels = 'dall-e-3' | 'dall-e-2';
+
+export type TImageSize = '256x256' | '512x512' | '1024x1024' | '1792x1024' | '1024x1792';
+export type TImageQuality = 'standard' | 'hd';
+
+export type TImageStyle = 'vivid' | 'natural';
+
 export type TMessageRole = 'user' | 'system' | 'assistant';
 
 export interface IChatMessage {
     role: TMessageRole
-    content: string
+    content: string | IChatContent[]
 }
 
 export type TContentType = 'text' | 'image_url';

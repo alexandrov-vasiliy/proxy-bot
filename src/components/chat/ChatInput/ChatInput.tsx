@@ -1,4 +1,4 @@
-import { ActionIcon, Box, Select, Textarea } from '@mantine/core';
+import { ActionIcon, Box, Textarea } from '@mantine/core';
 import { Dispatch, SetStateAction } from 'react';
 import { IconSend } from '@tabler/icons-react';
 import { UseChatHelpers } from 'ai/react';
@@ -7,33 +7,30 @@ import { TAvailibleModels } from '@/lib/types';
 
 interface IProps extends Pick<UseChatHelpers, 'input' | 'setInput'> {
     input: string
-    onSubmit: (value: string) => void
     isLoading: boolean
-    model: TAvailibleModels
-    models: TAvailibleModels[]
-    setModel: Dispatch<SetStateAction<TAvailibleModels>>
+    onAction?: (data: FormData) => void
+    onSubmit?: (value: string) => void
+    children?: React.ReactNode
 }
 
-export default function ChatInput({ input, setInput, isLoading, onSubmit, model, setModel, models }: IProps) {
+export default function ChatInput({ input, setInput, isLoading, onSubmit, children, onAction }: IProps) {
     return (
         <Box className={classes.border} right="25%" pos="fixed" bottom={0} bg="white" p={40} w="50%">
 
-            <form onSubmit={async e => {
-                e.preventDefault();
-                if (!input?.trim()) {
-                    return;
-                }
-                setInput('');
-                await onSubmit(input);
-            }}
+            <form
+              action={onAction}
+              onSubmit={async e => {
+                    e.preventDefault();
+                    if (!input?.trim()) {
+                        return;
+                    }
+                    setInput('');
+                    if (onSubmit) {
+                        await onSubmit(input);
+                    }
+                }}
             >
-                <Select
-                  maw={200}
-                  allowDeselect={false}
-                  data={models}
-                  onChange={(val) => setModel(val as TAvailibleModels)}
-                  value={model}
-                />
+                {children}
 
                 <Textarea
                   mt="xs"
@@ -57,17 +54,6 @@ export default function ChatInput({ input, setInput, isLoading, onSubmit, model,
                 />
 
             </form>
-            {/*<Radio.Group
-                mt="xl"
-                withAsterisk
-                value={hotkey}
-                onChange={setHotkey}
-            >
-                <Stack mt="xs">
-                    <Radio value="shift+Enter" size={'xs'} label="shift+Enter для отпраки"/>
-                    <Radio value="Enter"  size={'xs'} label="Enter для отправки"/>
-                </Stack>
-            </Radio.Group>*/}
         </Box>
     );
 }

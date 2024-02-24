@@ -2,9 +2,21 @@
 
 import { signIn, signOut, useSession } from 'next-auth/react';
 import { Avatar, Button, Group, Text } from '@mantine/core';
+import { IconBrandGithub } from '@tabler/icons-react';
+import { showError } from '@/utils/notifications';
 
 export default function UserOrLogin() {
     const { data: session } = useSession();
+
+    const logInWithGitHub = async () => {
+        try {
+            await signIn('github');
+        } catch (e) {
+            showError({
+                message: `Ошибка при авторизации через github ${e}`,
+            });
+        }
+    };
 
     if (session?.user) {
         return (
@@ -19,8 +31,8 @@ export default function UserOrLogin() {
     }
 
     return (
-        <Button onClick={() => signIn('github')} variant="link" className="-ml-2">
-            Login
+        <Button onClick={logInWithGitHub} variant="outline" className="-ml-2">
+            <IconBrandGithub /> Login with github
         </Button>
     );
 }

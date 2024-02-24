@@ -2,11 +2,11 @@ import type { Metadata } from 'next';
 import './globals.css';
 import '@mantine/core/styles.css';
 import '@mantine/code-highlight/styles.css';
-import { getServerSession } from 'next-auth';
 import { ColorSchemeScript, createTheme, MantineProvider } from '@mantine/core';
 import MainShell from '@/components/layout/MainShell';
 import SessionProvider from '@/components/providers/SessionProvider';
 import ChatHistory from '@/components/chat/ChatHistory/ChatHistory';
+import { auth } from '@/auth';
 
 // import '@mantine/dates/styles.css';
 // import '@mantine/dropzone/styles.css';
@@ -25,7 +25,7 @@ export default async function RootLayout({
                                          }: Readonly<{
     children: React.ReactNode;
 }>) {
-    const session = await getServerSession();
+    const session = await auth();
     return (
         <html lang="en">
         <head>

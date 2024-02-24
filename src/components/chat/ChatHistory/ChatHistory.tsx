@@ -1,9 +1,9 @@
 import { Button, Stack, Text } from '@mantine/core';
-import { getServerSession } from 'next-auth';
 import { ChatList } from '@/components/chat/ChatList/ChatList';
+import { auth } from '@/auth';
 
 export default async function ChatHistory() {
-    const session = await getServerSession();
+    const session = await auth();
     if (!session) {
         return (
             <Stack>

@@ -1,10 +1,12 @@
 import OpenAI from 'openai';
-import { nanoid, OpenAIStream, StreamingTextResponse } from 'ai';
+import { OpenAIStream, StreamingTextResponse } from 'ai';
 import { NextRequest } from 'next/server';
 import { kv } from '@vercel/kv';
-import { getServerSession } from 'next-auth';
+import { auth } from '@/auth';
+import { nanoid } from '@/utils/nanoid';
+import { StrategyFactory } from '@/app/api/RequestStrategy/StrategyFabric';
 
-const openai = new OpenAI({
+export const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
     baseURL: process.env.OPENAI_API_HOST,
 });
@@ -13,7 +15,7 @@ export const runtime = 'edge';
 
 export async function POST(req: NextRequest) {
     const json = await req.json();
-    const userId = (await getServerSession())?.user.id;
+    const userId = (await auth())?.user.id;
     const { messages, model } = json;
 
     if (!userId) {
@@ -23,22 +25,22 @@ export async function POST(req: NextRequest) {
     }
 
     console.log('api chat send messages to: ', model, openai.apiKey, openai.baseURL);
-    const response = await openai.chat.completions.create({
-        model,
-        stream: true,
-        messages,
-        max_tokens: 4000,
-    });
+
+    const strategy = StrategyFactory.getStrategy(model);
+
+    const response = strategy.makeRequest();
 
     const stream = OpenAIStream(response, {
         async onCompletion(completion) {
             const title = json.messages[0].content.substring(0, 100);
             const id = json.id ?? nanoid();
+            console.log('chatID : ', id);
             const createdAt = Date.now();
             const path = `/chat/${id}`;
             const payload = {
                 id,
                 title,
+                userId,
                 createdAt,
                 path,
                 messages: [

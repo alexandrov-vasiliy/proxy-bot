@@ -1,6 +1,6 @@
 'use client';
 
-import { Container, Stack } from '@mantine/core';
+import { Container, Group, Select, Stack } from '@mantine/core';
 
 import { useChat } from 'ai/react';
 import { useState } from 'react';
@@ -10,8 +10,9 @@ import MessagesList from '@/components/chat/MessagesList';
 
 import ChatInput from '@/components/chat/ChatInput/ChatInput';
 import { TAvailibleModels } from '@/lib/types';
-import { TEXT_MODELS } from '@/constants/TextModels';
+import { TEXT_MODELS } from '@/constants';
 import { showError } from '@/utils/notifications';
+import ImageSettings from '@/components/chat/ImageSettings/ImageSettings';
 
 export interface ChatProps {
     initialMessages?: Message[]
@@ -31,6 +32,7 @@ export default function Chat({ id, initialMessages }: ChatProps) {
         id,
         initialMessages,
         body: {
+            id,
             model,
         },
         onResponse(response) {
@@ -59,9 +61,6 @@ export default function Chat({ id, initialMessages }: ChatProps) {
                 <MessagesList messages={messages} />
 
                 <ChatInput
-                  models={TEXT_MODELS}
-                  model={model}
-                  setModel={setModel}
                   onSubmit={async value => {
                         await append({
                             content: value,
@@ -71,7 +70,23 @@ export default function Chat({ id, initialMessages }: ChatProps) {
                   input={input}
                   setInput={setInput}
                   isLoading={isLoading}
-                />
+                >
+                    <Group>
+                        <Select
+                          maw={150}
+                          label="model"
+                          allowDeselect={false}
+                          data={TEXT_MODELS}
+                          onChange={(val) => setModel(val as TAvailibleModels)}
+                          value={model}
+                        />
+                        {
+                            model === 'dall-e-2' || model === 'dall-e-3'
+                                ? <ImageSettings /> : ''
+                        }
+                    </Group>
+
+                </ChatInput>
             </Container>
 
         </Stack>

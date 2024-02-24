@@ -1,15 +1,15 @@
 'use server';
 
-import aiAxios from '@/lib/axios';
+import OpenAI from 'openai/index';
+import ImageGenerateParams = OpenAI.ImageGenerateParams;
 
-export async function generateImage(prompt: string) {
-    const response = await aiAxios.post('/images/generations', {
-        model: 'dall-e-3',
-        prompt,
-        response_format: 'url',
-        n: 1,
-        size: '1024x1024',
-    });
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+    baseURL: process.env.OPENAI_API_HOST,
+});
+
+export async function generateImage(params: ImageGenerateParams) {
+    const response = await openai.images.generate(params);
 
     return response.data;
 }

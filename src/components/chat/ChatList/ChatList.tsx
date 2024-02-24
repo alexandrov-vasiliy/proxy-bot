@@ -1,5 +1,6 @@
 import { cache } from 'react';
-import { Stack } from '@mantine/core';
+import { NavLink, Stack } from '@mantine/core';
+import Link from 'next/link';
 import { getChats } from '@/actions/chats';
 
 interface Props {
@@ -15,7 +16,7 @@ export async function ChatList(props: Props) {
         <Stack>
             {
                 chats?.map((chat) => (
-                    <div>{chat.title}</div>
+                    <NavLink component={Link} label={chat.title} href={`/chat/${chat.id}`} />
                 ))
             }
         </Stack>
